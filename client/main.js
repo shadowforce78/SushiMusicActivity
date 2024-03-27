@@ -2,6 +2,8 @@ import { DiscordSDK } from "@discord/embedded-app-sdk";
 
 import rocketLogo from '/rocket.png';
 import sushi from './sushi.png';
+import playSvg from './play-svgrepo-com.svg';
+import pauseSvg from './pause-svgrepo-com.svg';
 import "./style.css";
 
 // Will eventually store the authenticated user's access_token
@@ -113,6 +115,7 @@ function searchSong() {
   console.log(message);
 }
 
+
 document.querySelector('#app').innerHTML = `
   <div>
     <img src="${sushi}" class="logo" alt="Discord" />
@@ -120,6 +123,13 @@ document.querySelector('#app').innerHTML = `
     <!-- Add a message input field -->
     <input class="inputfield" type="text" id="message" placeholder="Song name/link" />
     <!-- Add a send button -->
-    <button class="send" onClick="searchSong()">Search</button>
+    <button class="send">Search</button>
+      <div class="player">
+        <img src="${playSvg}" class="play" alt="Play" />
+        <img src="${pauseSvg}" class="pause" alt="Pause" />
+      </div>
   </div>
 `;
+
+// Ajoutez cette ligne juste avant la fin de votre code JavaScript existant
+document.querySelector('.send').addEventListener('click', searchSong);

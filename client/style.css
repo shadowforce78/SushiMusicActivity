@@ -93,3 +93,17 @@ button:focus-visible {
 .send:hover {
   background-color: #646cff;
 }
+
+
+.player {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2em 0;
+}
+
+.player img {
+  height: 4em;
+  border-radius: 50%;
+  margin: 0 1em;
+}
