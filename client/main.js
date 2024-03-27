@@ -55,9 +55,22 @@ async function setupDiscordSdk() {
   }
 }
 
-function searchSong() {
-  const message = document.getElementById('message').value;
-  console.log(message);
+function addSong() {
+  // Get the value of the input field
+  const message = document.querySelector('#message').value;
+  // Get the id of the div list
+  const playlist = document.querySelector('.playlist');
+  // Create a new text node with the value of the input field
+  const text = document.createTextNode(message);
+  // Create a new div element
+  const div = document.createElement('div');
+  // Append the text node to the div element
+  div.appendChild(text);
+  // Append the div element to the list
+  playlist.appendChild(div);
+  // Clear the input field
+  document.querySelector('#message').value = '';
+
 }
 
 let audio = new Audio(songmp3);
@@ -110,6 +123,11 @@ function updateProgress() {
   totalTime.textContent = totalMinutes + ":" + totalSeconds;
 }
 
+function clearQueue() {
+  const playlist = document.querySelector('.playlist');
+  playlist.innerHTML = '';
+}
+
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -128,13 +146,17 @@ document.querySelector('#app').innerHTML = `
         <input type="range" class="progress" min="0" max="100" value="0" step="0.1">
         <span class="current-time">0:00</span> / <span class="total-time">0:00</span>
       </div>
+      <div class="playlist">
+      </div>
+      <button class="clear">Clear Queue</button>
   </div>
 `;
 
 // Ajoutez cette ligne juste avant la fin de votre code JavaScript existant
-document.querySelector('.send').addEventListener('click', searchSong);
+document.querySelector('.send').addEventListener('click', addSong);
 document.querySelector('.play').addEventListener('click', playSong);
 document.querySelector('.pause').addEventListener('click', pauseSong);
 document.querySelector('.restart').addEventListener('click', restartSong);
+document.querySelector('.clear').addEventListener('click', clearQueue);
 
 audio.addEventListener('timeupdate', updateProgress);
