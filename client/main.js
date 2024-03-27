@@ -4,6 +4,8 @@ import rocketLogo from '/rocket.png';
 import sushi from './sushi.png';
 import playSvg from './play-svgrepo-com.svg';
 import pauseSvg from './pause-svgrepo-com.svg';
+import restartSvg from './restart-svgrepo-com.svg';
+import songmp3 from './song.mp3'
 import "./style.css";
 
 // Will eventually store the authenticated user's access_token
@@ -13,11 +15,6 @@ const discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
 
 setupDiscordSdk().then(() => {
   console.log("Discord SDK is authenticated");
-
-  appendVoiceChannelName();
-  appendGuildAvatar();
-  // We can now make API calls within the scopes we requested in setupDiscordSDK()
-  // Note: the access_token returned is a sensitive secret and should be treated as such
 });
 
 async function setupDiscordSdk() {
@@ -58,61 +55,59 @@ async function setupDiscordSdk() {
   }
 }
 
-async function appendVoiceChannelName() {
-  const app = document.querySelector('#app');
-
-  let activityChannelName = 'Unknown';
-
-  // Requesting the channel in GDMs (when the guild ID is null) requires
-  // the dm_channels.read scope which requires Discord approval.
-  if (discordSdk.channelId != null && discordSdk.guildId != null) {
-    // Over RPC collect info about the channel
-    const channel = await discordSdk.commands.getChannel({ channel_id: discordSdk.channelId });
-    if (channel.name != null) {
-      activityChannelName = channel.name;
-    }
-  }
-
-  // Update the UI with the name of the current voice channel
-  const textTagString = `Activity Channel: "${activityChannelName}"`;
-  const textTag = document.createElement('p');
-  textTag.innerHTML = textTagString;
-  app.appendChild(textTag);
-}
-
-async function appendGuildAvatar() {
-  const app = document.querySelector('#app');
-
-  // 1. From the HTTP API fetch a list of all of the user's guilds
-  const guilds = await fetch(`https://discord.com/api/v10/users/@me/guilds`, {
-    headers: {
-      // NOTE: we're using the access_token provided by the "authenticate" command
-      Authorization: `Bearer ${auth.access_token}`,
-      'Content-Type': 'application/json',
-    },
-  }).then((response) => response.json());
-
-  // 2. Find the current guild's info, including it's "icon"
-  const currentGuild = guilds.find((g) => g.id === discordSdk.guildId);
-
-  // 3. Append to the UI an img tag with the related information
-  if (currentGuild != null) {
-    const guildImg = document.createElement('img');
-    guildImg.setAttribute(
-      'src',
-      // More info on image formatting here: https://discord.com/developers/docs/reference#image-formatting
-      `https://cdn.discordapp.com/icons/${currentGuild.id}/${currentGuild.icon}.webp?size=128`
-    );
-    guildImg.setAttribute('width', '128px');
-    guildImg.setAttribute('height', '128px');
-    guildImg.setAttribute('style', 'border-radius: 50%;');
-    app.appendChild(guildImg);
-  }
-}
-
 function searchSong() {
   const message = document.getElementById('message').value;
   console.log(message);
+}
+
+let audio = new Audio(songmp3);
+
+function playSong() {
+  audio.play();
+}
+
+function pauseSong() {
+  audio.pause();
+}
+
+function restartSong() {
+  // Mettez en pause l'audio s'il est en cours de lecture
+  if (!audio.paused) {
+    audio.pause();
+  }
+  // Réinitialisez la position de lecture au début du fichier audio
+  audio.currentTime = 0;
+  // Reprenez la lecture
+  audio.play();
+}
+
+function updateProgress() {
+  const progressBar = document.querySelector('.progress');
+  // Met à jour la valeur de la barre de progression en fonction de la position actuelle de lecture
+  progressBar.value = (audio.currentTime / audio.duration) * 100;
+
+  const currentTime = document.querySelector('.current-time');
+  const totalTime = document.querySelector('.total-time');
+
+  // Convertir le temps écoulé en minutes:secondes
+  let currentMinutes = Math.floor(audio.currentTime / 60);
+  let currentSeconds = Math.floor(audio.currentTime - currentMinutes * 60);
+
+  // Convertir la durée totale en minutes:secondes
+  let totalMinutes = Math.floor(audio.duration / 60);
+  let totalSeconds = Math.floor(audio.duration - totalMinutes * 60);
+
+  // Ajouter un 0 initial si les secondes sont inférieures à 10
+  if (currentSeconds < 10) {
+    currentSeconds = "0" + currentSeconds;
+  }
+  if (totalSeconds < 10) {
+    totalSeconds = "0" + totalSeconds;
+  }
+
+  // Afficher le temps écoulé et la durée totale
+  currentTime.textContent = currentMinutes + ":" + currentSeconds;
+  totalTime.textContent = totalMinutes + ":" + totalSeconds;
 }
 
 
@@ -127,9 +122,19 @@ document.querySelector('#app').innerHTML = `
       <div class="player">
         <img src="${playSvg}" class="play" alt="Play" />
         <img src="${pauseSvg}" class="pause" alt="Pause" />
+        <img src="${restartSvg}" class="restart" alt="Restart" />
+      </div>
+      <div class="progress-container">   
+        <input type="range" class="progress" min="0" max="100" value="0" step="0.1">
+        <span class="current-time">0:00</span> / <span class="total-time">0:00</span>
       </div>
   </div>
 `;
 
 // Ajoutez cette ligne juste avant la fin de votre code JavaScript existant
 document.querySelector('.send').addEventListener('click', searchSong);
+document.querySelector('.play').addEventListener('click', playSong);
+document.querySelector('.pause').addEventListener('click', pauseSong);
+document.querySelector('.restart').addEventListener('click', restartSong);
+
+audio.addEventListener('timeupdate', updateProgress);

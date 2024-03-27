@@ -94,7 +94,6 @@ button:focus-visible {
   background-color: #646cff;
 }
 
-
 .player {
   display: flex;
   align-items: center;
@@ -106,4 +105,16 @@ button:focus-visible {
   height: 4em;
   border-radius: 50%;
   margin: 0 1em;
+}
+
+.player img:hover {
+  background-color: #646cff;
+  border-radius: 22px;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2em 0;
 }
