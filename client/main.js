@@ -55,6 +55,37 @@ async function setupDiscordSdk() {
   }
 }
 
+async function getUserInfo() {
+  const app = document.querySelector('#app');
+
+  // Fetch user information from the Discord API
+  const user = await fetch(`https://discord.com/api/v10/users/@me`, {
+    headers: {
+      Authorization: `Bearer ${auth.access_token}`,
+      'Content-Type': 'application/json',
+    },
+  }).then((response) => response.json());
+
+  // Get the user's avatar and username
+  const avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+  const username = user.username;
+
+  // Create an img tag for the user's avatar
+  const avatarImg = document.createElement('img');
+  avatarImg.setAttribute('src', avatarUrl);
+  avatarImg.setAttribute('width', '128px');
+  avatarImg.setAttribute('height', '128px');
+  avatarImg.setAttribute('style', 'border-radius: 50%;');
+  app.appendChild(avatarImg);
+
+  // Display the user's username
+  const usernameElement = document.createElement('span');
+  usernameElement.textContent = username;
+  app.appendChild(usernameElement);
+}
+
+
+
 function addSong() {
   // Get the value of the input field
   const message = document.querySelector('#message').value;
@@ -64,14 +95,18 @@ function addSong() {
   const text = document.createTextNode(message);
   // Create a new div element
   const div = document.createElement('div');
+  // Create avatar and username elements
+  const avatar = document.createElement('img');
+  // Set the class for both elements
+  avatar.className = 'avatar';
   // Append the text node to the div element
   div.appendChild(text);
   // Append the div element to the list
   playlist.appendChild(div);
   // Clear the input field
   document.querySelector('#message').value = '';
-
 }
+
 
 let audio = new Audio(songmp3);
 
@@ -153,7 +188,12 @@ document.querySelector('#app').innerHTML = `
 `;
 
 // Ajoutez cette ligne juste avant la fin de votre code JavaScript existant
-document.querySelector('.send').addEventListener('click', addSong);
+// Ajoutez cette ligne juste avant la fin de votre code JavaScript existant
+document.querySelector('.send').addEventListener('click', () => {
+  addSong();
+  getUserInfo();
+});
+
 document.querySelector('.play').addEventListener('click', playSong);
 document.querySelector('.pause').addEventListener('click', pauseSong);
 document.querySelector('.restart').addEventListener('click', restartSong);
