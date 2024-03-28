@@ -139,3 +139,16 @@ button:focus-visible {
   border-radius: 0 0 0 22px;
   z-index: 1;
 }
+
+
+.playlist-item {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espace entre l'avatar et le texte */
+}
+
+.avatar {
+  border-radius: 50%;
+  width: 50px; /* Réduisez la taille de l'avatar pour la playlist */
+  height: 50px;
+}

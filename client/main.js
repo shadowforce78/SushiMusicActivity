@@ -68,20 +68,18 @@ async function getUserInfo() {
 
   // Get the user's avatar and username
   const avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
-  const username = user.username;
+  
 
   // Create an img tag for the user's avatar
   const avatarImg = document.createElement('img');
+  avatarImg.className = 'avatar';
   avatarImg.setAttribute('src', avatarUrl);
   avatarImg.setAttribute('width', '128px');
   avatarImg.setAttribute('height', '128px');
   avatarImg.setAttribute('style', 'border-radius: 50%;');
-  app.appendChild(avatarImg);
 
-  // Display the user's username
-  const usernameElement = document.createElement('span');
-  usernameElement.textContent = username;
-  app.appendChild(usernameElement);
+  const div = document.querySelector('.playlist-item');
+  div.appendChild(avatarImg);
 }
 
 
@@ -95,10 +93,7 @@ function addSong() {
   const text = document.createTextNode(message);
   // Create a new div element
   const div = document.createElement('div');
-  // Create avatar and username elements
-  const avatar = document.createElement('img');
-  // Set the class for both elements
-  avatar.className = 'avatar';
+  div.className = 'playlist-item';
   // Append the text node to the div element
   div.appendChild(text);
   // Append the div element to the list
@@ -160,6 +155,11 @@ function updateProgress() {
 
 function clearQueue() {
   const playlist = document.querySelector('.playlist');
+  // Remove each avatar
+  const avatar = document.querySelectorAll('.avatar');
+  avatar.forEach((element) => {
+    element.remove();
+  });
   playlist.innerHTML = '';
 }
 
@@ -187,7 +187,6 @@ document.querySelector('#app').innerHTML = `
   </div>
 `;
 
-// Ajoutez cette ligne juste avant la fin de votre code JavaScript existant
 // Ajoutez cette ligne juste avant la fin de votre code JavaScript existant
 document.querySelector('.send').addEventListener('click', () => {
   addSong();
