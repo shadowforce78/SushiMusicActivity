@@ -119,18 +119,18 @@ button:focus-visible {
   margin: 2em 0;
 }
 
-.playlist{
+.playlist {
   /* Up left */
   position: absolute;
   top: 0;
   left: 0;
   padding: 1em;
   background-color: #1a1a1a;
-  border-radius: 0 0 22px 0 ;
+  border-radius: 0 0 22px 0;
   z-index: 1;
 }
 
-.clear{
+.clear {
   position: absolute;
   top: 0;
   right: 0;
@@ -139,7 +139,6 @@ button:focus-visible {
   border-radius: 0 0 0 22px;
   z-index: 1;
 }
-
 
 .playlist-item {
   display: flex;
@@ -151,4 +150,15 @@ button:focus-visible {
   border-radius: 50%;
   width: 50px; /* Réduisez la taille de l'avatar pour la playlist */
   height: 50px;
+}
+
+.volume {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2em 0;
+}
+
+.volume-label {
+  margin-right: 1em;
 }

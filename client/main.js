@@ -163,6 +163,11 @@ function clearQueue() {
   playlist.innerHTML = '';
 }
 
+function updateVolume() {
+  const volume = document.querySelector('.volume');
+  audio.volume = volume.value / 100;
+}
+
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -176,6 +181,8 @@ document.querySelector('#app').innerHTML = `
         <img src="${playSvg}" class="play" alt="Play" />
         <img src="${pauseSvg}" class="pause" alt="Pause" />
         <img src="${restartSvg}" class="restart" alt="Restart" />
+        <input type="range" class="volume" min="0" max="100" value="100" step="1">
+        <span class="volume-label">Volume</span>
       </div>
       <div class="progress-container">   
         <input type="range" class="progress" min="0" max="100" value="0" step="0.1">
@@ -198,4 +205,5 @@ document.querySelector('.pause').addEventListener('click', pauseSong);
 document.querySelector('.restart').addEventListener('click', restartSong);
 document.querySelector('.clear').addEventListener('click', clearQueue);
 
+document.querySelector('.volume').addEventListener('input', updateVolume);
 audio.addEventListener('timeupdate', updateProgress);
