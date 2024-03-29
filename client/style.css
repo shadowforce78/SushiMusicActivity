@@ -101,11 +101,23 @@ button:focus-visible {
   margin: 2em 0;
 }
 
-.player img {
-  height: 4em;
+.play {
+  width: 3.5em;
   border-radius: 50%;
+}
+
+.next {
+  width: 2em;
   margin: 0 1em;
 }
+
+.previous{
+  width: 2em;
+  margin: 0 1em;
+  rotate: 180deg;
+}
+
+
 
 .player img:hover {
   background-color: #646cff;
@@ -152,13 +164,7 @@ button:focus-visible {
   height: 50px;
 }
 
-.volume {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 2em 0;
-}
-
-.volume-label {
-  margin-right: 1em;
+.volume img{
+  width: 2em;
+  margin: 0 1em;
 }

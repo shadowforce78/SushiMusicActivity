@@ -2,9 +2,6 @@ import { DiscordSDK } from "@discord/embedded-app-sdk";
 
 import rocketLogo from '/rocket.png';
 import sushi from './sushi.png';
-import playSvg from './play-svgrepo-com.svg';
-import pauseSvg from './pause-svgrepo-com.svg';
-import restartSvg from './restart-svgrepo-com.svg';
 import songmp3 from './song.mp3'
 import "./style.css";
 
@@ -55,7 +52,7 @@ async function setupDiscordSdk() {
   }
 }
 
-async function getUserInfo() {
+async function getUserAvatar() {
   const app = document.querySelector('#app');
 
   // Fetch user information from the Discord API
@@ -66,42 +63,41 @@ async function getUserInfo() {
     },
   }).then((response) => response.json());
 
-  // Get the user's avatar and username
+  // Get the user's avatar
   const avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
-  
 
-  // Create an img tag for the user's avatar
-  const avatarImg = document.createElement('img');
-  avatarImg.className = 'avatar';
-  avatarImg.setAttribute('src', avatarUrl);
-  avatarImg.setAttribute('width', '128px');
-  avatarImg.setAttribute('height', '128px');
-  avatarImg.setAttribute('style', 'border-radius: 50%;');
-
-  const div = document.querySelector('.playlist-item');
-  div.appendChild(avatarImg);
+  return avatarUrl;
 }
+
 
 
 
 function addSong() {
-  // Get the value of the input field
   const message = document.querySelector('#message').value;
-  // Get the id of the div list
+  if (!message) return; // Ne rien faire si le message est vide
+
+
   const playlist = document.querySelector('.playlist');
-  // Create a new text node with the value of the input field
-  const text = document.createTextNode(message);
-  // Create a new div element
+
   const div = document.createElement('div');
   div.className = 'playlist-item';
-  // Append the text node to the div element
+
+  const avatarImg = document.createElement('img');
+  avatarImg.className = 'avatar';
+  getUserAvatar().then((avatarUrl) => {
+    avatarImg.src = avatarUrl;
+  });
+  avatarImg.setAttribute('alt', 'Avatar');
+
+  const text = document.createTextNode(message);
+
+  div.appendChild(avatarImg);
   div.appendChild(text);
-  // Append the div element to the list
+
   playlist.appendChild(div);
-  // Clear the input field
+
   document.querySelector('#message').value = '';
 }
-
 
 let audio = new Audio(songmp3);
 
@@ -168,6 +164,9 @@ function updateVolume() {
   audio.volume = volume.value / 100;
 }
 
+import playSvg from './svgs/play-circle-svgrepo-com.svg'
+import nextSvg from './svgs/next-svgrepo-com.svg';
+import volumeIcon from './svgs/volume-interface-symbol-svgrepo-com.svg';
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -178,11 +177,13 @@ document.querySelector('#app').innerHTML = `
     <!-- Add a send button -->
     <button class="send">Search</button>
       <div class="player">
-        <img src="${playSvg}" class="play" alt="Play" />
-        <img src="${pauseSvg}" class="pause" alt="Pause" />
-        <img src="${restartSvg}" class="restart" alt="Restart" />
-        <input type="range" class="volume" min="0" max="100" value="100" step="1">
-        <span class="volume-label">Volume</span>
+          <img src="${nextSvg}" class="previous" alt="Previous" />
+          <img src="${playSvg}" class="play" alt="Play" />
+          <img src="${nextSvg}" class="next" alt="Next" />
+      </div>
+      <div class="volume">
+          <img src="${volumeIcon}" class="volumeicon" alt="Volume" />
+          <input type="range" class="volume" min="0" max="100" value="100" step="1">
       </div>
       <div class="progress-container">   
         <input type="range" class="progress" min="0" max="100" value="0" step="0.1">
@@ -197,7 +198,6 @@ document.querySelector('#app').innerHTML = `
 // Ajoutez cette ligne juste avant la fin de votre code JavaScript existant
 document.querySelector('.send').addEventListener('click', () => {
   addSong();
-  getUserInfo();
 });
 
 document.querySelector('.play').addEventListener('click', playSong);
