@@ -107,28 +107,25 @@ button:focus-visible {
 }
 
 .next {
-  width: 2em;
+  width: 1.2em;
   margin: 0 1em;
 }
 
-.previous{
-  width: 2em;
+.previous {
+  width: 1.2em;
   margin: 0 1em;
   rotate: 180deg;
 }
 
-
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .player img:hover {
   background-color: #646cff;
   border-radius: 22px;
-}
-
-.progress-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 2em 0;
 }
 
 .playlist {
@@ -141,7 +138,6 @@ button:focus-visible {
   border-radius: 0 0 22px 0;
   z-index: 1;
 }
-
 .clear {
   position: absolute;
   top: 0;
@@ -164,7 +160,38 @@ button:focus-visible {
   height: 50px;
 }
 
-.volume img{
+.volumeContainer img {
   width: 2em;
-  margin: 0 1em;
+  margin-left: 3em;
+}
+
+.volumeContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1em 0;
+  width: 50em;
+  height: 0.5em;
+}
+
+.progress-bar {
+  background-color: #141414;
+  width: 50em;
+  height: 0.5em;
+  position: relative;
+  border-radius: 22px;
+}
+
+.progressing-bar {
+  background-color: #646cff;
+  height: 0.5em;
+  border-radius: 22px;
+  width: 5px;
+  position: absolute;
 }

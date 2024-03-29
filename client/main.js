@@ -100,14 +100,19 @@ function addSong() {
 }
 
 let audio = new Audio(songmp3);
+var playing = false;
 
 function playSong() {
-  audio.play();
+  if (playing) {
+    audio.pause();
+    playing = false;
+  }
+  else {
+    audio.play();
+    playing = true;
+  }
 }
 
-function pauseSong() {
-  audio.pause();
-}
 
 function restartSong() {
   // Mettez en pause l'audio s'il est en cours de lecture
@@ -121,32 +126,25 @@ function restartSong() {
 }
 
 function updateProgress() {
-  const progressBar = document.querySelector('.progress');
-  // Met à jour la valeur de la barre de progression en fonction de la position actuelle de lecture
-  progressBar.value = (audio.currentTime / audio.duration) * 100;
-
+  const progressingBar = document.querySelector('.progressing-bar');
   const currentTime = document.querySelector('.current-time');
   const totalTime = document.querySelector('.total-time');
 
-  // Convertir le temps écoulé en minutes:secondes
-  let currentMinutes = Math.floor(audio.currentTime / 60);
-  let currentSeconds = Math.floor(audio.currentTime - currentMinutes * 60);
+  const progress = (audio.currentTime / audio.duration) * 100;
+  progressingBar.style.width = `${progress}%`;
 
-  // Convertir la durée totale en minutes:secondes
-  let totalMinutes = Math.floor(audio.duration / 60);
-  let totalSeconds = Math.floor(audio.duration - totalMinutes * 60);
+  const currentMinutes = Math.floor(audio.currentTime / 60);
+  const currentSeconds = Math.floor(audio.currentTime % 60);
+  currentTime.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
 
-  // Ajouter un 0 initial si les secondes sont inférieures à 10
-  if (currentSeconds < 10) {
-    currentSeconds = "0" + currentSeconds;
+  const totalMinutes = Math.floor(audio.duration / 60);
+  const totalSeconds = Math.floor(audio.duration % 60);
+  totalTime.textContent = `${totalMinutes}:${totalSeconds.toString().padStart(2, '0')}`;
+
+  if (audio.currentTime === audio.duration) {
+    audio.pause();
+    playing = false;
   }
-  if (totalSeconds < 10) {
-    totalSeconds = "0" + totalSeconds;
-  }
-
-  // Afficher le temps écoulé et la durée totale
-  currentTime.textContent = currentMinutes + ":" + currentSeconds;
-  totalTime.textContent = totalMinutes + ":" + totalSeconds;
 }
 
 function clearQueue() {
@@ -176,18 +174,24 @@ document.querySelector('#app').innerHTML = `
     <input class="inputfield" type="text" id="message" placeholder="Song name/link" />
     <!-- Add a send button -->
     <button class="send">Search</button>
-      <div class="player">
-          <img src="${nextSvg}" class="previous" alt="Previous" />
-          <img src="${playSvg}" class="play" alt="Play" />
-          <img src="${nextSvg}" class="next" alt="Next" />
-      </div>
-      <div class="volume">
-          <img src="${volumeIcon}" class="volumeicon" alt="Volume" />
-          <input type="range" class="volume" min="0" max="100" value="100" step="1">
+      <div class="main">
+        <div class="player">
+            <img src="${nextSvg}" class="previous" alt="Previous" />
+            <img src="${playSvg}" class="play" alt="Play" />
+            <img src="${nextSvg}" class="next" alt="Next" />
+        </div>
+        <div class="volumeContainer">
+            <img src="${volumeIcon}" class="volumeicon" alt="Volume" />
+            <input type="range" class="volume" min="0" max="100" value="100" step="1">
+        </div>
       </div>
       <div class="progress-container">   
-        <input type="range" class="progress" min="0" max="100" value="0" step="0.1">
-        <span class="current-time">0:00</span> / <span class="total-time">0:00</span>
+        <span class="current-time">0:00</span>
+        <div class="bars">
+          <div class="progress-bar"></div>
+          <div class="progressing-bar"></div>
+        </div>
+        <span class="total-time">0:00</span>
       </div>
       <div class="playlist">
       </div>
