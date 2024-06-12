@@ -112,4 +112,4 @@ document.querySelector('#app').innerHTML = `
 
 // Ajoutez cette ligne juste avant la fin de votre code JavaScript existant
 document.querySelector('.play').addEventListener('click', playSong)
-document.querySelector('.send').addEventListener('click', donwlodSong)
+document.querySelector('.send').addEventListener('click', downloadSong)
