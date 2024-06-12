@@ -106,10 +106,12 @@ function playSong() {
   if (playing) {
     audio.pause();
     playing = false;
+    console.log('pause');
   }
   else {
     audio.play();
     playing = true;
+    console.log('play');
   }
 }
 
