@@ -114,8 +114,6 @@ function playSong() {
 }
 
 import playSvg from './svgs/play-circle-svgrepo-com.svg'
-import nextSvg from './svgs/next-svgrepo-com.svg';
-import volumeIcon from './svgs/volume-interface-symbol-svgrepo-com.svg';
 
 document.querySelector('#app').innerHTML = `
   <div>
