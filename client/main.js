@@ -11,103 +11,104 @@ let auth;
 const discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
 
 setupDiscordSdk().then(() => {
-  console.log("Discord SDK is authenticated");
+    console.log("Discord SDK is authenticated");
 });
 
 async function setupDiscordSdk() {
-  await discordSdk.ready();
-  console.log("Discord SDK is ready");
+    await discordSdk.ready();
+    console.log("Discord SDK is ready");
 
-  // Authorize with Discord Client
-  const { code } = await discordSdk.commands.authorize({
-    client_id: import.meta.env.VITE_DISCORD_CLIENT_ID,
-    response_type: "code",
-    state: "",
-    prompt: "none",
-    scope: [
-      "identify",
-      "guilds",
-    ],
-  });
+    // Authorize with Discord Client
+    const { code } = await discordSdk.commands.authorize({
+        client_id: import.meta.env.VITE_DISCORD_CLIENT_ID,
+        response_type: "code",
+        state: "",
+        prompt: "none",
+        scope: [
+            "identify",
+            "guilds",
+        ],
+    });
 
-  // Retrieve an access_token from your activity's server
-  const response = await fetch("/api/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      code,
-    }),
-  });
-  const { access_token } = await response.json();
+    // Retrieve an access_token from your activity's server
+    const response = await fetch("/api/token", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            code,
+        }),
+    });
+    const { access_token } = await response.json();
 
-  // Authenticate with Discord client (using the access_token)
-  auth = await discordSdk.commands.authenticate({
-    access_token,
-  });
+    // Authenticate with Discord client (using the access_token)
+    auth = await discordSdk.commands.authenticate({
+        access_token,
+    });
 
-  if (auth == null) {
-    throw new Error("Authenticate command failed");
-  }
+    if (auth == null) {
+        throw new Error("Authenticate command failed");
+    }
 }
 
 async function getUserAvatar() {
-  const app = document.querySelector('#app');
+    const app = document.querySelector('#app');
 
-  // Fetch user information from the Discord API
-  const user = await fetch(`https://discord.com/api/v10/users/@me`, {
-    headers: {
-      Authorization: `Bearer ${auth.access_token}`,
-      'Content-Type': 'application/json',
-    },
-  }).then((response) => response.json());
+    // Fetch user information from the Discord API
+    const user = await fetch(`https://discord.com/api/v10/users/@me`, {
+        headers: {
+            Authorization: `Bearer ${auth.access_token}`,
+            'Content-Type': 'application/json',
+        },
+    }).then((response) => response.json());
 
-  // Get the user's avatar
-  const avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+    // Get the user's avatar
+    const avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
 
-  return avatarUrl;
+    return avatarUrl;
 }
 
+// Fonction pour télécharger la chanson
 function downloadSong() {
-  const url = "https://youtu.be/uGSu6mhk3RQ";
-  ytdl(url, { filter: 'audioonly' })
-    .pipe(fs.createWriteStream('audio.mp3'))
-    .on('finish', () => {
-      console.log('download complete');
-      playSong();
-    });
-  console.log('download started');
+    const url = "https://youtu.be/uGSu6mhk3RQ";
+    ytdl(url, { filter: 'audioonly' })
+        .pipe(fs.createWriteStream('audio.mp3'))
+        .on('finish', () => {
+            console.log('download complete');
+        });
+    console.log('download started');
 }
 
-
-function playSong(){
-  const songPath = './audio.mp3';
-  if (fs.existsSync(songPath)) {
-    console.log('songmp3', songPath);
-    let audio = new Audio(songPath);
-    audio.play();
-  } else {
-    console.log('no songmp3');
-  }
+// Fonction pour jouer la chanson
+function playSong() {
+    const songPath = './audio.mp3';
+    if (fs.existsSync(songPath)) {
+        console.log('songmp3', songPath);
+        // Utilisation de l'API HTML5 Audio pour jouer la chanson
+        const audio = new Audio(songPath);
+        audio.play();
+    } else {
+        console.log('no songmp3');
+    }
 }
 
 import playSvg from './svgs/play-circle-svgrepo-com.svg'
 
 document.querySelector('#app').innerHTML = `
-  <div>
-    <img src="${sushi}" class="logo" alt="Discord" />
-    <h1>Sushi Music</h1>
-    <!-- Add a message input field -->
-    <input class="inputfield" type="text" id="message" placeholder="Song name/link" />
-    <!-- Add a send button -->
-    <button class="send">Search</button>
-      <div class="main">
-        <div class="player">
-            <img src="${playSvg}" class="play" alt="Play" />
+    <div>
+        <img src="${sushi}" class="logo" alt="Discord" />
+        <h1>Sushi Music</h1>
+        <!-- Add a message input field -->
+        <input class="inputfield" type="text" id="message" placeholder="Song name/link" />
+        <!-- Add a send button -->
+        <button class="send">Search</button>
+        <div class="main">
+            <div class="player">
+                <img src="${playSvg}" class="play" alt="Play" />
+            </div>
         </div>
-      </div>
-  </div>
+    </div>
 `;
 
 // Ajoutez cette ligne juste avant la fin de votre code JavaScript existant
