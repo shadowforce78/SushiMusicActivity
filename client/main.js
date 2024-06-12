@@ -113,55 +113,6 @@ function playSong() {
   }
 }
 
-
-function restartSong() {
-  // Mettez en pause l'audio s'il est en cours de lecture
-  if (!audio.paused) {
-    audio.pause();
-  }
-  // Réinitialisez la position de lecture au début du fichier audio
-  audio.currentTime = 0;
-  // Reprenez la lecture
-  audio.play();
-}
-
-function updateProgress() {
-  const progressingBar = document.querySelector('.progressing-bar');
-  const currentTime = document.querySelector('.current-time');
-  const totalTime = document.querySelector('.total-time');
-
-  const progress = (audio.currentTime / audio.duration) * 100;
-  progressingBar.style.width = `${progress}%`;
-
-  const currentMinutes = Math.floor(audio.currentTime / 60);
-  const currentSeconds = Math.floor(audio.currentTime % 60);
-  currentTime.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
-
-  const totalMinutes = Math.floor(audio.duration / 60);
-  const totalSeconds = Math.floor(audio.duration % 60);
-  totalTime.textContent = `${totalMinutes}:${totalSeconds.toString().padStart(2, '0')}`;
-
-  if (audio.currentTime === audio.duration) {
-    audio.pause();
-    playing = false;
-  }
-}
-
-function clearQueue() {
-  const playlist = document.querySelector('.playlist');
-  // Remove each avatar
-  const avatar = document.querySelectorAll('.avatar');
-  avatar.forEach((element) => {
-    element.remove();
-  });
-  playlist.innerHTML = '';
-}
-
-function updateVolume() {
-  const volume = document.querySelector('.volume');
-  audio.volume = volume.value / 100;
-}
-
 import playSvg from './svgs/play-circle-svgrepo-com.svg'
 import nextSvg from './svgs/next-svgrepo-com.svg';
 import volumeIcon from './svgs/volume-interface-symbol-svgrepo-com.svg';
@@ -176,26 +127,9 @@ document.querySelector('#app').innerHTML = `
     <button class="send">Search</button>
       <div class="main">
         <div class="player">
-            <img src="${nextSvg}" class="previous" alt="Previous" />
             <img src="${playSvg}" class="play" alt="Play" />
-            <img src="${nextSvg}" class="next" alt="Next" />
-        </div>
-        <div class="volumeContainer">
-            <img src="${volumeIcon}" class="volumeicon" alt="Volume" />
-            <input type="range" class="volume" min="0" max="100" value="100" step="1">
         </div>
       </div>
-      <div class="progress-container">   
-        <span class="current-time">0:00</span>
-        <div class="bars">
-          <div class="progress-bar"></div>
-          <div class="progressing-bar"></div>
-        </div>
-        <span class="total-time">0:00</span>
-      </div>
-      <div class="playlist">
-      </div>
-      <button class="clear">Clear Queue</button>
   </div>
 `;
 
