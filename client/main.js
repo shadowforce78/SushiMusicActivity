@@ -1,9 +1,9 @@
 import { DiscordSDK } from "@discord/embedded-app-sdk";
-
 import rocketLogo from '/rocket.png';
 import sushi from './sushi.png';
-import songmp3 from './song.mp3'
 import "./style.css";
+import ytdl from 'ytdl-core';
+import fs from 'fs-extra';
 
 // Will eventually store the authenticated user's access_token
 let auth;
@@ -69,49 +69,26 @@ async function getUserAvatar() {
   return avatarUrl;
 }
 
-
-
-
-function addSong() {
-  const message = document.querySelector('#message').value;
-  if (!message) return; // Ne rien faire si le message est vide
-
-
-  const playlist = document.querySelector('.playlist');
-
-  const div = document.createElement('div');
-  div.className = 'playlist-item';
-
-  const avatarImg = document.createElement('img');
-  avatarImg.className = 'avatar';
-  getUserAvatar().then((avatarUrl) => {
-    avatarImg.src = avatarUrl;
-  });
-  avatarImg.setAttribute('alt', 'Avatar');
-
-  const text = document.createTextNode(message);
-
-  div.appendChild(avatarImg);
-  div.appendChild(text);
-
-  playlist.appendChild(div);
-
-  document.querySelector('#message').value = '';
+function downloadSong() {
+  const url = "https://youtu.be/uGSu6mhk3RQ";
+  ytdl(url, { filter: 'audioonly' })
+    .pipe(fs.createWriteStream('audio.mp3'))
+    .on('finish', () => {
+      console.log('download complete');
+      playSong();
+    });
+  console.log('download started');
 }
 
-let audio = new Audio(songmp3);
-var playing = false;
 
-function playSong() {
-  if (playing) {
-    audio.pause();
-    playing = false;
-    console.log('pause');
-  }
-  else {
+function playSong(){
+  const songPath = './audio.mp3';
+  if (fs.existsSync(songPath)) {
+    console.log('songmp3', songPath);
+    let audio = new Audio(songPath);
     audio.play();
-    playing = true;
-    console.log('play');
+  } else {
+    console.log('no songmp3');
   }
 }
 
@@ -134,8 +111,5 @@ document.querySelector('#app').innerHTML = `
 `;
 
 // Ajoutez cette ligne juste avant la fin de votre code JavaScript existant
-document.querySelector('.send').addEventListener('click', () => {
-  addSong();
-});
-
-document.querySelector('.play').addEventListener('click', playSong);
+document.querySelector('.play').addEventListener('click', playSong)
+document.querySelector('.send').addEventListener('click', donwlodSong)

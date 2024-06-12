@@ -12,6 +12,8 @@
     "vite": "^5.0.8"
   },
   "dependencies": {
-    "@discord/embedded-app-sdk": "^1.0.2"
+    "@discord/embedded-app-sdk": "^1.0.2",
+    "fs-extra": "^11.2.0",
+    "ytdl-core": "^4.11.5"
   }
 }
