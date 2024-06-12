@@ -137,9 +137,3 @@ document.querySelector('.send').addEventListener('click', () => {
 });
 
 document.querySelector('.play').addEventListener('click', playSong);
-document.querySelector('.pause').addEventListener('click', pauseSong);
-document.querySelector('.restart').addEventListener('click', restartSong);
-document.querySelector('.clear').addEventListener('click', clearQueue);
-
-document.querySelector('.volume').addEventListener('input', updateVolume);
-audio.addEventListener('timeupdate', updateProgress);
